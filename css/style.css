@@ -5,16 +5,6 @@ body {
 	margin-right: 0 !important;
 }
 
-.w3-third img {
-	margin-bottom: 0px; 
-	opacity: 0.8; 
-	cursor: pointer
-}
-
-.w3-third img:hover {
-	opacity: 1
-}
-
 .text_title {
 	font-size: 18px;
 }
@@ -57,4 +47,31 @@ span {
 
 .prev_next_invisible {
 	opacity: 0!important;
+}
+
+/* Reserve space for images - 3:2 ratio */
+.w3-third a {
+    display: block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 66.67%; /* 3:2 ratio (2/3 = 66.67%) */
+    overflow: hidden;
+    background: #f5f5f5;
+}
+
+.lazy-load {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 1px !important;
+    display: block !important; /* Override inline display:none */
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    object-fit: cover;
+}
+
+.lazy-load.loaded {
+    opacity: 1;
 }
