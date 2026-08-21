@@ -75,3 +75,14 @@ span {
 .lazy-load.loaded {
     opacity: 1;
 }
+
+
+
+.lazy-load {
+    transition: filter 0.1s ease;
+    cursor: pointer;
+}
+
+.lazy-load:hover {
+    filter: brightness(0.5);
+}
