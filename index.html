@@ -101,9 +101,16 @@ document.addEventListener('keydown', e => {
 });
 document.addEventListener('visibilitychange', restart);
 
-let sx = 0;
-show.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+// swipe: one finger only, never while pinching or zoomed in
+const zoomed = () => window.visualViewport && visualViewport.scale > 1.01;
+let sx = 0, multi = false;
+show.addEventListener('touchstart', e => {
+  if (e.touches.length > 1) multi = true;
+  else { multi = false; sx = e.touches[0].clientX; }
+}, { passive: true });
 show.addEventListener('touchend', e => {
+  if (multi) { if (!e.touches.length) multi = false; return; }
+  if (zoomed()) return;
   const dx = e.changedTouches[0].clientX - sx;
   if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
 }, { passive: true });
