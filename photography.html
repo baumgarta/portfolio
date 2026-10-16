@@ -1,273 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>André Baumgart – Photography</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="css/w3.css">
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="scripts/fancybox-master/dist/jquery.fancybox.min.css">
+<title>André Baumgart – Photography</title>
 <link rel="icon" href="files/fav.png" type="image/x-icon">
+<link rel="stylesheet" href="style.css">
 </head>
-<body class="w3-light-grey w3-content" style="max-width:4000px">
+<body>
 
-<!-- Sidebar/menu -->
-<nav class="w3-sidebar w3-bar-block w3-white w3-animate-left w3-collapse w3-top w3-left" style="z-index:3;width:220px" id="mySidebar"><br>
-  <a href="index.html" style="text-decoration:none"><h3 class="w3-bar-item w3-left w3-text-black text_title">André Baumgart</h3></a>
-  <a href="photography.html" style="text-decoration:none" class="w3-bar-item w3-button w3-text-black text_nav">Photography</a> 
-  <a href="contact.html" style="text-decoration:none" class="w3-bar-item w3-button w3-text-black text_nav">Contact</a> 
+<input type="checkbox" id="menu" class="menu-toggle" aria-label="Toggle menu">
+<nav class="sidebar" aria-label="Main">
+  <a class="brand" href="index.html">André Baumgart</a>
+  <a class="nav-link" href="photography.html" aria-current="page">Photography</a>
+  <a class="nav-link" href="contact.html">Contact</a>
 </nav>
-
-<!-- Top menu on small screens -->
-<header class="w3-container w3-top w3-hide-large w3-white w3-xlarge w3-padding-16">
-  <span class="w3-left w3-padding text_title_small">André Baumgart</span>
-  <a href="javascript:void(0)" style="text-decoration:none" class="w3-right w3-button w3-white" onclick="w3_open()">☰</a>
+<header class="topbar">
+  <a class="brand" href="index.html">André Baumgart</a>
+  <label class="menu-btn" for="menu" aria-label="Menu">☰</label>
 </header>
+<label class="overlay" for="menu"></label>
 
-<!-- Overlay effect when opening sidebar on small screens -->
-<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="" id="myOverlay"></div>
+<main>
+  <div class="grid" id="grid"></div>
+</main>
 
-<!-- Page content -->
-<div class="w3-main" style="margin-left:220px">
-
-  <!-- Push down content on small screens --> 
-  <div class="w3-hide-large" style="margin-top:83px"></div>
-
-  <!-- Photo grid -->
-  <div class="w3-row fancybox-navigation" id="photoGrid"></div>
-  
-  <!-- Modal for full size images on click-->
-  <div id="modal01" class="w3-modal w3-black" style="padding-top:0" onclick="this.style.display='none'">
-    <span class="w3-button w3-black w3-xlarge w3-display-topright">×</span>
-    <div class="w3-modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">
-      <img id="img01" class="w3-image">
-      <p id="caption"></p>
-    </div>
-  </div>
-
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" tabindex="-1">
+  <img class="lb-img" id="lbImg" alt="">
+  <p class="caption" id="caption"></p>
+  <button class="lb-btn lb-close" id="lbClose" aria-label="Close">✕</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous">‹</button>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next">›</button>
 </div>
 
-<!-- scripts -->
-<script src="scripts/fancybox-master/dist/jquery-3.4.1.min.js"></script>
-<script src="scripts/fancybox-master/dist/jquery.fancybox.min.js"></script>
-
 <script>
-// Image data
-const images = [
-    { id: 'img0153', caption: 'Rabac, 2026' },
-    { id: 'img0152', caption: 'Koromačno, 2026' },
-    { id: 'img0151', caption: 'Pula, 2026' },
-    { id: 'img0150', caption: 'Trieste, 2026' },
-    { id: 'img0148', caption: 'Vodnjan, 2026' },
-    { id: 'img0145', caption: 'Vienna, 2026' },
-    { id: 'img0146', caption: 'Vienna, 2026' },
-    { id: 'img0144', caption: 'Eisenerz, 2026' },
-    { id: 'img0137', caption: 'Pinezići, 2026' },
-    { id: 'img0129', caption: 'Vienna, 2025' },
-    { id: 'img0125', caption: 'Vienna, 2025' },
-    { id: 'img0132', caption: 'Buje, 2025' },
-    { id: 'img0126', caption: 'Vienna, 2024' },
-    { id: 'img0123', caption: 'Vienna, 2024' },
-    { id: 'img0121', caption: 'Vienna, 2024' },
-    { id: 'img0122', caption: 'Vienna, 2024' },
-    { id: 'img0133', caption: 'Vienna, 2024' },
-    { id: 'img0131', caption: "Sant'Antioco, Sardinia, 2024" },
-    { id: 'img0120', caption: 'Alghero, Sardinia, 2024' },
-    { id: 'img0119', caption: 'Alghero, Sardinia, 2024' },
-    { id: 'img0138', caption: 'Iglesias, Sardinia, 2024' },
-    { id: 'img0107', caption: 'Vienna, 2024' },
-    { id: 'img0118', caption: 'Vienna, 2024' },
-    { id: 'img0130', caption: 'Vienna, 2024' },
-    { id: 'img0072', caption: 'Essen, 2023' },
-    { id: 'img0103', caption: 'Cassis, 2023' },
-    { id: 'img0147', caption: 'Saint-Jean-Cap-Ferrat, 2023' },
-    { id: 'img0109', caption: 'Nice, 2023' },
-    { id: 'img0140', caption: 'Nice, 2023' },
-    { id: 'img0105', caption: 'Nice, 2023' },
-    { id: 'img0108', caption: 'Nice, 2023' },
-    { id: 'img0070', caption: 'Venice, 2023' },
-    { id: 'img0112', caption: 'Venice, 2023' },
-    { id: 'img0106', caption: 'Venice, 2023' },
-    { id: 'img0110', caption: 'Venice, 2023' },
-    { id: 'img0100', caption: 'Ota, Corsica, 2022' },
-    { id: 'img0073', caption: 'Bonifacio, Corsica, 2022' },
-    { id: 'img0102', caption: 'Erbalunga, Corsica, 2022' },
-    { id: 'img0101', caption: 'Vienna, 2022' },
-    { id: 'img0099', caption: 'Rare and short-lived blooming of <i>Amorphophallus titanum</i> at the University of Vienna Botanical Gardens, 2022' },
-    { id: 'img0062', caption: 'Venice, 2021' },
-    { id: 'img0061', caption: 'Venice, 2021' },
-    { id: 'img0060', caption: 'Israel Pavilion (Biennale), Venice, 2021' },
-    { id: 'img0078', caption: 'Venice, 2021' },
-    { id: 'img0096', caption: 'Venice, 2021' },
-    { id: 'img0059', caption: 'Vienna, 2021' },
-    { id: 'img0057', caption: 'Vienna, 2020' },
-    { id: 'img0058', caption: 'Vienna, 2020' },
-    { id: 'img0098', caption: 'Deutschkreutz, 2020' },
-    { id: 'img0056', caption: 'Liège, 2020' },
-    { id: 'img0071', caption: '21st Century Museum of Contemporary Art, Kanazawa, 2019' },
-    { id: 'img0074', caption: 'Tokyo, 2019' },
-    { id: 'img0054', caption: 'Takayama, 2019' },
-    { id: 'img0050', caption: 'Tokyo, 2019' },
-    { id: 'img0051', caption: 'Tokyo, 2019' },
-    { id: 'img0053', caption: 'Kyoto, 2019' },
-    { id: 'img0052', caption: 'Osaka, 2019' },
-    { id: 'img0055', caption: 'Kyoto, 2019' },
-    { id: 'img0049', caption: 'Vienna, 2019' },
-    { id: 'img0048', caption: 'Vienna, 2019' },
-    { id: 'img0097', caption: 'Vienna, 2019' },
-    { id: 'img0077', caption: 'Zurich, 2019' },
-    { id: 'img0046', caption: 'Vienna, 2018' },
-    { id: 'img0091', caption: 'Deutschkreutz, 2018' },
-    { id: 'img0043', caption: 'Lisbon, 2018' },
-    { id: 'img0042', caption: 'Porto, 2018' },
-    { id: 'img0041', caption: 'Aljezur, 2018' },
-    { id: 'img0044', caption: 'Lisbon, 2018' },
-    { id: 'img0040', caption: 'Iberia, 2018' },
-    { id: 'img0029', caption: 'Rome, 2017' },
-    { id: 'img0093', caption: 'Rome, 2017' },
-    { id: 'img0143', caption: 'Rome, 2017' },
-    { id: 'img0030', caption: 'Rome, 2017' },
-    { id: 'img0028', caption: 'Rome, 2017' },
-    { id: 'img0092', caption: 'Rome, 2017' },
-    { id: 'img0068', caption: 'Washington D.C., 2017' },
-    { id: 'img0075', caption: 'New York City, 2017' },
-    { id: 'img0037', caption: 'New York City, 2017' },
-    { id: 'img0038', caption: 'New York City, 2017' },
-    { id: 'img0039', caption: 'New York City, 2017' },
-    { id: 'img0036', caption: 'Barcelona, 2016' },
-    { id: 'img0047', caption: 'Barcelona, 2016' },
-    { id: 'img0034', caption: 'Barcelona, 2016' },
-    { id: 'img0035', caption: 'Barcelona, 2016' },
-    { id: 'img0032', caption: 'Vienna, 2016' },
-    { id: 'img0033', caption: 'Vienna, 2016' },
-    { id: 'img0031', caption: 'Akademikerball in Vienna, 2016' },
-    { id: 'img0124', caption: 'Berlin, 2016' },
-    { id: 'img0134', caption: 'Mittenwald, 2016' },
-    { id: 'img0079', caption: 'Vík, 2014' },
-    { id: 'img0009', caption: 'Nepali Armed Police Force (APF) personnel clashing with protesters during civil unrest following a rise in fuel prices in Kathmandu, 2012' },
-    { id: 'img0087', caption: 'Civil unrest following a rise in fuel prices in Kathmandu, 2012' },
-    { id: 'img0116', caption: 'Nepali Armed Police Force (APF) personnel clashing with protesters during civil unrest following a rise in fuel prices in Kathmandu, 2012' },
-    { id: 'img0088', caption: 'Nepali Armed Police Force (APF) personnel clashing with protesters during civil unrest following a rise in fuel prices in Kathmandu, 2012' },
-    { id: 'img0010', caption: 'Nepali Armed Police Force (APF) personnel charging protesters during civil unrest following a rise in fuel prices in Kathmandu, 2012' },
-    { id: 'img0011', caption: 'Civil unrest following a rise in fuel prices in Kathmandu, 2012' },
-    { id: 'img0115', caption: 'Nepali Armed Police Force (APF) personnel deployed during civil unrest following a rise in fuel prices in Kathmandu, 2012' },
-    { id: 'img0021', caption: 'Kathmandu, 2011' },
-    { id: 'img0024', caption: 'Massage parlour in Kathmandu employing and training the visually impaired, 2011' },
-    { id: 'img0023', caption: 'Massage parlour in Kathmandu employing and training the visually impaired, 2011' },
-    { id: 'img0022', caption: 'Civil unrest in Kathmandu in the wake of the killing of an imprisoned local Congress party youth leader in southern Nepal, December 2011' },
-    { id: 'img0004', caption: 'Nepalese politicians addressing an audience during Newari New Year\'s festivities in Kathmandu, 2011' },
-    { id: 'img0003', caption: 'Security guards protecting the vehicle carrying Nepalese Prime Minister Baburam Bhattarai during Newari New Year\'s festivities in Kathmandu, 2011' },
-    { id: 'img0065', caption: 'Kathmandu, 2011' },
-    { id: 'img0066', caption: 'Pokhara, 2011' },
-    { id: 'img0063', caption: 'Squatter demonstration following the public announcement of plans to demolish an illegal settlement in Kathmandu, 2011' },
-    { id: 'img0025', caption: 'Squatter demonstration following the public announcement of plans to demolish an illegal settlement in Kathmandu, 2011' },
-    { id: 'img0026', caption: 'Squatter demonstration following the public announcement of plans to demolish an illegal settlement in Kathmandu, 2011' },
-    { id: 'img0027', caption: 'Squatter demonstration following the public announcement of plans to demolish an illegal settlement in Kathmandu, 2011' },
-    { id: 'img0082', caption: 'Squatter demonstration following the public announcement of plans to demolish an illegal settlement in Kathmandu, 2011' },
-    { id: 'img0114', caption: 'Squatter demonstration following the public announcement of plans to demolish an illegal settlement in Kathmandu, 2011' },
-    { id: 'img0064', caption: 'Yamdrok Lake, 2011' },
-    { id: 'img0015', caption: 'Near Lhatse, 2011' },
-    { id: 'img0089', caption: 'Gyantse, 2011' },
-    { id: 'img0084', caption: 'Shigatse, 2011' },
-    { id: 'img0014', caption: 'Shigatse, 2011' },
-    { id: 'img0127', caption: 'Shigatse, 2011' },
-    { id: 'img0113', caption: 'Lhasa, 2011' },
-    { id: 'img0016', caption: 'Lhasa, 2011' },
-    { id: 'img0017', caption: 'Lhasa, 2011' },
-    { id: 'img0142', caption: 'Lhasa, 2011' },
-    { id: 'img0085', caption: 'Lhasa, 2011' },
-    { id: 'img0095', caption: 'Lhasa, 2011' },
-    { id: 'img0081', caption: 'Award ceremony after a match of two blind cricket teams, Kathmandu, 2011' },
-    { id: 'img0135', caption: 'Kathmandu, 2011' },
-    { id: 'img0006', caption: 'Kathmandu, 2011' },
-    { id: 'img0001', caption: 'Cremation in Pashupatinath, Kathmandu, 2011' },
-    { id: 'img0008', caption: 'Kathmandu, 2011' },
-    { id: 'img0013', caption: 'Godawari gompa, 2011' },
-    { id: 'img0090', caption: 'Godawari gompa, 2011' },
-    { id: 'img0012', caption: 'Godawari gompa, 2011' },
-    { id: 'img0128', caption: 'Pokhara, 2011' },
-    { id: 'img0018', caption: 'Pokhara, 2011' },
-    { id: 'img0045', caption: 'Kathmandu, 2011' },
-    { id: 'img0019', caption: 'Kathmandu, 2011' },
-    { id: 'img0086', caption: 'Kathmandu, 2011' },
-    { id: 'img0007', caption: 'Kathmandu, 2011' },
-    { id: 'img0067', caption: 'Kathmandu, 2011' },
-    { id: 'img0083', caption: 'Wedding ceremony band in Kathmandu, 2011' },
-    { id: 'img0002', caption: 'Kathmandu, 2011' },
-    { id: 'img0117', caption: 'Godawari, 2011' },
-    { id: 'img0141', caption: 'Kathmandu, 2011' },
-    { id: 'img0080', caption: 'Kathmandu, 2011' },
-    { id: 'img0111', caption: 'Army drills in Kathmandu, 2011' },
-    { id: 'img0005', caption: 'Kathmandu, 2011' },
-    { id: 'img0020', caption: 'Kathmandu, 2011' },
-    { id: 'img0094', caption: 'Liège, 2010' }
-];
+const DATA = [
+  ['img0153','Rabac, 2026'], ['img0152','Koromačno, 2026'], ['img0151','Pula, 2026'], ['img0150','Trieste, 2026'],
+  ['img0148','Vodnjan, 2026'], ['img0145','Vienna, 2026'], ['img0146','Vienna, 2026'], ['img0144','Eisenerz, 2026'],
+  ['img0137','Pinezići, 2026'], ['img0129','Vienna, 2025'], ['img0125','Vienna, 2025'], ['img0132','Buje, 2025'],
+  ['img0126','Vienna, 2024'], ['img0123','Vienna, 2024'], ['img0121','Vienna, 2024'], ['img0122','Vienna, 2024'],
+  ['img0133','Vienna, 2024'], ['img0131',"Sant'Antioco, Sardinia, 2024"], ['img0120','Alghero, Sardinia, 2024'],
+  ['img0119','Alghero, Sardinia, 2024'], ['img0138','Iglesias, Sardinia, 2024'], ['img0107','Vienna, 2024'],
+  ['img0118','Vienna, 2024'], ['img0130','Vienna, 2024'], ['img0072','Essen, 2023'], ['img0103','Cassis, 2023'],
+  ['img0147','Saint-Jean-Cap-Ferrat, 2023'], ['img0109','Nice, 2023'], ['img0140','Nice, 2023'], ['img0105','Nice, 2023'],
+  ['img0108','Nice, 2023'], ['img0070','Venice, 2023'], ['img0112','Venice, 2023'], ['img0106','Venice, 2023'],
+  ['img0110','Venice, 2023'], ['img0100','Ota, Corsica, 2022'], ['img0073','Bonifacio, Corsica, 2022'],
+  ['img0102','Erbalunga, Corsica, 2022'], ['img0101','Vienna, 2022'],
+  ['img0099','Rare and short-lived blooming of <i>Amorphophallus titanum</i> at the University of Vienna Botanical Gardens, 2022'],
+  ['img0062','Venice, 2021'], ['img0061','Venice, 2021'], ['img0060','Israel Pavilion (Biennale), Venice, 2021'],
+  ['img0078','Venice, 2021'], ['img0096','Venice, 2021'], ['img0059','Vienna, 2021'], ['img0057','Vienna, 2020'],
+  ['img0058','Vienna, 2020'], ['img0098','Deutschkreutz, 2020'], ['img0056','Liège, 2020'],
+  ['img0071','21st Century Museum of Contemporary Art, Kanazawa, 2019'], ['img0074','Tokyo, 2019'],
+  ['img0054','Takayama, 2019'], ['img0050','Tokyo, 2019'], ['img0051','Tokyo, 2019'], ['img0053','Kyoto, 2019'],
+  ['img0052','Osaka, 2019'], ['img0055','Kyoto, 2019'], ['img0049','Vienna, 2019'], ['img0048','Vienna, 2019'],
+  ['img0097','Vienna, 2019'], ['img0077','Zurich, 2019'], ['img0046','Vienna, 2018'], ['img0091','Deutschkreutz, 2018'],
+  ['img0043','Lisbon, 2018'], ['img0042','Porto, 2018'], ['img0041','Aljezur, 2018'], ['img0044','Lisbon, 2018'],
+  ['img0040','Iberia, 2018'], ['img0029','Rome, 2017'], ['img0093','Rome, 2017'], ['img0143','Rome, 2017'],
+  ['img0030','Rome, 2017'], ['img0028','Rome, 2017'], ['img0092','Rome, 2017'], ['img0068','Washington D.C., 2017'],
+  ['img0075','New York City, 2017'], ['img0037','New York City, 2017'], ['img0038','New York City, 2017'],
+  ['img0039','New York City, 2017'], ['img0036','Barcelona, 2016'], ['img0047','Barcelona, 2016'],
+  ['img0034','Barcelona, 2016'], ['img0035','Barcelona, 2016'], ['img0032','Vienna, 2016'], ['img0033','Vienna, 2016'],
+  ['img0031','Akademikerball in Vienna, 2016'], ['img0124','Berlin, 2016'], ['img0134','Mittenwald, 2016'],
+  ['img0079','Vík, 2014'],
+  ['img0009','Nepali Armed Police Force (APF) personnel clashing with protesters during civil unrest following a rise in fuel prices in Kathmandu, 2012'],
+  ['img0087','Civil unrest following a rise in fuel prices in Kathmandu, 2012'],
+  ['img0116','Nepali Armed Police Force (APF) personnel clashing with protesters during civil unrest following a rise in fuel prices in Kathmandu, 2012'],
+  ['img0088','Nepali Armed Police Force (APF) personnel clashing with protesters during civil unrest following a rise in fuel prices in Kathmandu, 2012'],
+  ['img0010','Nepali Armed Police Force (APF) personnel charging protesters during civil unrest following a rise in fuel prices in Kathmandu, 2012'],
+  ['img0011','Civil unrest following a rise in fuel prices in Kathmandu, 2012'],
+  ['img0115','Nepali Armed Police Force (APF) personnel deployed during civil unrest following a rise in fuel prices in Kathmandu, 2012'],
+  ['img0021','Kathmandu, 2011'], ['img0024','Massage parlour in Kathmandu employing and training the visually impaired, 2011'], ['img0023','Massage parlour in Kathmandu employing and training the visually impaired, 2011'],
+  ['img0022','Civil unrest in Kathmandu in the wake of the killing of an imprisoned local Congress party youth leader in southern Nepal, December 2011'],
+  ['img0004',"Nepalese politicians addressing an audience during Newari New Year's festivities in Kathmandu, 2011"],
+  ['img0003',"Security guards protecting the vehicle carrying Nepalese Prime Minister Baburam Bhattarai during Newari New Year's festivities in Kathmandu, 2011"],
+  ['img0065','Kathmandu, 2011'], ['img0066','Pokhara, 2011'],
+  ['img0063','Squatter demonstration following the public announcement of plans to demolish an illegal settlement in Kathmandu, 2011'], ['img0025','Squatter demonstration following the public announcement of plans to demolish an illegal settlement in Kathmandu, 2011'], ['img0026','Squatter demonstration following the public announcement of plans to demolish an illegal settlement in Kathmandu, 2011'], ['img0027','Squatter demonstration following the public announcement of plans to demolish an illegal settlement in Kathmandu, 2011'], ['img0082','Squatter demonstration following the public announcement of plans to demolish an illegal settlement in Kathmandu, 2011'], ['img0114','Squatter demonstration following the public announcement of plans to demolish an illegal settlement in Kathmandu, 2011'],
+  ['img0064','Yamdrok Lake, 2011'], ['img0015','Near Lhatse, 2011'], ['img0089','Gyantse, 2011'],
+  ['img0084','Shigatse, 2011'], ['img0014','Shigatse, 2011'], ['img0127','Shigatse, 2011'],
+  ['img0113','Lhasa, 2011'], ['img0016','Lhasa, 2011'], ['img0017','Lhasa, 2011'], ['img0142','Lhasa, 2011'],
+  ['img0085','Lhasa, 2011'], ['img0095','Lhasa, 2011'],
+  ['img0081','Award ceremony after a match of two blind cricket teams, Kathmandu, 2011'],
+  ['img0135','Kathmandu, 2011'], ['img0006','Kathmandu, 2011'], ['img0001','Cremation in Pashupatinath, Kathmandu, 2011'],
+  ['img0008','Kathmandu, 2011'], ['img0013','Godawari gompa, 2011'], ['img0090','Godawari gompa, 2011'], ['img0012','Godawari gompa, 2011'],
+  ['img0128','Pokhara, 2011'], ['img0018','Pokhara, 2011'], ['img0045','Kathmandu, 2011'], ['img0019','Kathmandu, 2011'],
+  ['img0086','Kathmandu, 2011'], ['img0007','Kathmandu, 2011'], ['img0067','Kathmandu, 2011'],
+  ['img0083','Wedding ceremony band in Kathmandu, 2011'], ['img0002','Kathmandu, 2011'], ['img0117','Godawari, 2011'],
+  ['img0141','Kathmandu, 2011'], ['img0080','Kathmandu, 2011'], ['img0111','Army drills in Kathmandu, 2011'],
+  ['img0005','Kathmandu, 2011'], ['img0020','Kathmandu, 2011'], ['img0094','Liège, 2010']
+].map(([id, caption]) => ({
+  id, caption,
+  thumb: `files/images_small/${id}t.jpg`,
+  full: `files/images_full/${id}.jpg`,
+  text: caption.replace(/<[^>]+>/g, '')
+}));
 
-// Generate gallery
-document.addEventListener('DOMContentLoaded', function() {
-    const grid = document.getElementById('photoGrid');
-    images.forEach(img => {
-        const div = document.createElement('div');
-        div.className = 'w3-third';
-        div.innerHTML = `
-            <a href="files/images_full/${img.id}.jpg" data-fancybox="gallery" class="lightbox" data-caption="${img.caption} &copy; André Baumgart">
-                <img class="lazy-load" data-src="files/images_small/${img.id}t.jpg" style="padding:1px;width:100%" alt="">
-            </a>
-        `;
-        grid.appendChild(div);
-    });
+const $ = id => document.getElementById(id);
+const grid = $('grid'), lb = $('lightbox'), lbImg = $('lbImg'), caption = $('caption');
+
+/* ---------- Grid ---------- */
+grid.innerHTML = DATA.map((d, i) => `
+  <a class="thumb" href="${d.full}" data-i="${i}" aria-label="${d.text.replace(/"/g, '&quot;')}">
+    <img src="${d.thumb}" alt="" loading="lazy" decoding="async">
+  </a>`).join('');
+
+grid.querySelectorAll('img').forEach(img => {
+  const done = () => img.classList.add('loaded');
+  img.complete ? done() : img.addEventListener('load', done, { once: true });
 });
 
-// Lazy loading
-document.addEventListener("DOMContentLoaded", () => {
-    const lazyImages = document.querySelectorAll('.lazy-load');
-    const config = {
-        root: null,
-        rootMargin: '200px',
-        threshold: 0.1
-    };
-
-    let observer = new IntersectionObserver((entries, self) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.onload = () => img.classList.add('loaded');
-                if (img.complete) {
-                    img.classList.add('loaded');
-                }
-                self.unobserve(img);
-            }
-        });
-    }, config);
-    lazyImages.forEach(image => observer.observe(image));
+grid.addEventListener('click', e => {
+  const a = e.target.closest('.thumb');
+  if (!a) return;
+  e.preventDefault();
+  openAt(+a.dataset.i, a);
 });
 
-// Sidebar functions
-function w3_open() {
-    document.getElementById("mySidebar").style.display = "block";
-    document.getElementById("myOverlay").style.display = "block";
+/* ---------- Lightbox ---------- */
+const EASE = 'cubic-bezier(.2, .7, .2, 1)';
+const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+let current = 0, opener = null, token = 0, nat = { w: 3, h: 2 };
+
+const isOpen = () => lb.classList.contains('open');
+const px = r => ({ left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
+const thumbRect = a => { const r = a.getBoundingClientRect(); return { left: r.left + 1, top: r.top + 1, width: r.width - 2, height: r.height - 2 }; };
+
+// Fits the image into the free area (above the caption) and returns its rectangle.
+function fit() {
+  const small = innerWidth <= 600, side = small ? 8 : 64, top = small ? 44 : 56;
+  const aw = innerWidth - side * 2, ah = innerHeight - caption.offsetHeight - top - 8;
+  const s = Math.min(aw / nat.w, ah / nat.h), w = nat.w * s, h = nat.h * s;
+  return { left: side + (aw - w) / 2, top: top + (ah - h) / 2, width: w, height: h };
 }
 
-function w3_close() {
-    document.getElementById("mySidebar").style.display = "none";
-    document.getElementById("myOverlay").style.display = "none";
+const place = () => Object.assign(lbImg.style, px(fit()));
+const setCaption = d => { caption.innerHTML = `${d.caption} &copy; André Baumgart`; };
+const preload = i => { new Image().src = DATA[(i + DATA.length) % DATA.length].full; };
+
+function zoom(from, to, duration = 380) {
+  lbImg.getAnimations().forEach(a => a.cancel());
+  if (reduce.matches) return null;
+  const anim = lbImg.animate([px(from), px(to)], { duration, easing: EASE, fill: 'forwards' });
+  // once open, hand control back to the CSS size (otherwise the animation's end frame would override later resizing)
+  anim.onfinish = () => { if (isOpen()) anim.cancel(); };
+  return anim;
 }
 
-// Modal Image Gallery
-function onClick(element) {
-    document.getElementById("img01").src = element.src;
-    document.getElementById("modal01").style.display = "block";
-    document.getElementById("caption").innerHTML = element.alt;
+function openAt(i, a) {
+  opener = a;
+  current = i;
+  const d = DATA[i], t = a.querySelector('img'), my = ++token;
+
+  lbImg.getAnimations().forEach(x => x.cancel());
+  nat = { w: t.naturalWidth || 3, h: t.naturalHeight || 2 };
+  lbImg.src = t.currentSrc || t.src;     // thumbnail first (already loaded), full size swapped in below
+  setCaption(d);
+  lb.classList.add('open');
+  place();
+  zoom(thumbRect(a), fit());
+
+  const full = new Image();
+  full.src = d.full;
+  (full.decode ? full.decode() : Promise.resolve()).catch(() => {}).then(() => {
+    if (my !== token) return;
+    const was = nat.w / nat.h, now = lbImg.getBoundingClientRect();
+    nat = { w: full.naturalWidth || nat.w, h: full.naturalHeight || nat.h };
+    lbImg.src = d.full;
+    place();
+    // the thumbnail can have a different shape than the photo (e.g. a vertical image): ease into the real shape
+    if (Math.abs(nat.w / nat.h - was) > was * 0.02) zoom(now, fit(), 300);
+    preload(current + 1);
+    preload(current - 1);
+  });
+  lb.focus({ preventScroll: true });
 }
 
-// Fancybox
-$('[data-fancybox]').fancybox({
-    clickContent: 'close',
-    buttons: ['close']
+// Next/previous: wait until the new image is decoded, then swap image and caption at once (no animation, no resizing).
+function show(i) {
+  current = (i + DATA.length) % DATA.length;
+  const d = DATA[current], my = ++token, img = new Image();
+  img.src = d.full;
+  (img.decode ? img.decode() : Promise.resolve()).catch(() => {}).then(() => {
+    if (my !== token) return;
+    nat = { w: img.naturalWidth || nat.w, h: img.naturalHeight || nat.h };
+    lbImg.getAnimations().forEach(x => x.cancel());
+    lbImg.src = d.full;
+    setCaption(d);
+    place();
+    preload(current + 1);
+    preload(current - 1);
+  });
+}
+
+function closeLb() {
+  if (!isOpen()) return;
+  token++;
+  const a = grid.children[current];
+  const from = lbImg.getBoundingClientRect();
+  lb.classList.remove('open');
+  if (a) {
+    let r = a.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > innerHeight) { a.scrollIntoView({ block: 'center' }); r = a.getBoundingClientRect(); }
+    zoom(from, thumbRect(a));
+  }
+  (a || opener) && (a || opener).focus({ preventScroll: true });
+}
+
+$('lbClose').onclick = closeLb;
+$('lbPrev').onclick = () => show(current - 1);
+$('lbNext').onclick = () => show(current + 1);
+lb.addEventListener('click', e => { if (!e.target.closest('.lb-btn')) closeLb(); });
+
+document.addEventListener('keydown', e => {
+  if (!isOpen()) return;
+  if (e.key === 'Escape') closeLb();
+  else if (e.key === 'ArrowLeft') show(current - 1);
+  else if (e.key === 'ArrowRight') show(current + 1);
+  if ([' ', 'ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End'].includes(e.key)) e.preventDefault();
 });
+
+addEventListener('resize', () => { if (isOpen()) { lbImg.getAnimations().forEach(a => a.cancel()); place(); } });
+
+// Keep the page behind the lightbox perfectly still (no overflow toggling, so no scrollbar-induced shift).
+const stop = e => e.preventDefault();
+lb.addEventListener('wheel', stop, { passive: false });
+lb.addEventListener('touchmove', stop, { passive: false });
+
+// swipe
+let sx = 0, sy = 0;
+lb.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+lb.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+  if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) show(current + (dx < 0 ? 1 : -1));
+  else if (dy > 90 && Math.abs(dy) > Math.abs(dx)) closeLb();
+}, { passive: true });
 </script>
-
 </body>
 </html>

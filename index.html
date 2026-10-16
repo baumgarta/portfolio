@@ -1,207 +1,112 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>André Baumgart</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-<link rel="stylesheet" href="css/w3.css">
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="scripts/fancybox-master/dist/jquery.fancybox.min.css">
-<link rel="icon" href=" files/fav.png" type="image/x-icon">
+<title>André Baumgart</title>
+<link rel="icon" href="files/fav.png" type="image/x-icon">
+<link rel="stylesheet" href="style.css">
 </head>
-<body class="w3-light-grey w3-content" style="max-width:4000px">
+<body>
 
-<!-- Sidebar/menu -->
-<nav class="w3-sidebar w3-bar-block w3-white w3-animate-left w3-collapse w3-top w3-left" style="z-index:3;width:220px" id="mySidebar"><br>
-  <a href="index.html" style="text-decoration:none"><h3 class="w3-bar-item w3-left w3-text-black text_title">André Baumgart</h3></a>
-  <a href="photography.html" style="text-decoration:none" class="w3-bar-item w3-button w3-text-black text_nav">Photography</a> 
-  <a href="contact.html" style="text-decoration:none" class="w3-bar-item w3-button w3-text-black text_nav">Contact</a> 
+<input type="checkbox" id="menu" class="menu-toggle" aria-label="Toggle menu">
+<nav class="sidebar" aria-label="Main">
+  <a class="brand" href="index.html">André Baumgart</a>
+  <a class="nav-link" href="photography.html">Photography</a>
+  <a class="nav-link" href="contact.html">Contact</a>
 </nav>
-
-<!-- Top menu on small screens -->
-<header class="w3-container w3-top w3-hide-large w3-white w3-xlarge w3-padding-16">
-  <span class="w3-left w3-padding text_title_small">André Baumgart</span>
-  <a href="javascript:void(0)" style="text-decoration:none" class="w3-right w3-button w3-white" onclick="w3_open()">☰</a>
+<header class="topbar">
+  <a class="brand" href="index.html">André Baumgart</a>
+  <label class="menu-btn" for="menu" aria-label="Menu">☰</label>
 </header>
+<label class="overlay" for="menu"></label>
 
-<!-- Overlay effect when opening sidebar on small screens -->
-<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
-
-<!-- Page content -->
-
-<div class="w3-main">
-
-  <!-- Push down content on small screens --> 
-  <div class="w3-hide-large"></div>
-
-	<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-inner">
-            <div class="carousel-item active">
-              <img src="files/images_full/img0115.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0153.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0027.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0103.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0119.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0064.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0036.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0010.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0102.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0032.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0052.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0123.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0126.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0044.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0001.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0017.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0022.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0049.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0113.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0109.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0009.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0018.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0039.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0031.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0011.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0133.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0006.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0094.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0055.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0013.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-            <div class="carousel-item">
-              <img src="files/images_full/img0023.jpg" class="mySlides" loading="lazy" alt="...">
-            </div>
-          </div>
-  	  <button class="carousel-control-prev prev-next_50" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-    		<span class="carousel-control-prev-icon prev_next_invisible" aria-hidden="true"></span>
-    		<span class="visually-hidden">Previous</span>
-  	  </button>
-  	  <button class="carousel-control-next prev-next_50" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-    		<span class="carousel-control-next-icon prev_next_invisible" aria-hidden="true"></span>
-    		<span class="visually-hidden">Next</span>
-  	  </button>
-	</div>
-
-  </div>
-</div>
-
-<!-- scripts -->
+<main class="slideshow" id="show" aria-roledescription="carousel" aria-label="Selected photographs">
+  <button class="zone prev" id="prev" aria-label="Previous image" tabindex="-1"></button>
+  <button class="zone next" id="next" aria-label="Next image" tabindex="-1"></button>
+</main>
 
 <script>
-// Script to open and close sidebar
-function w3_open() {
-  document.getElementById("mySidebar").style.display = "block";
-  document.getElementById("myOverlay").style.display = "block";
-}
- 
-function w3_close() {
-  document.getElementById("mySidebar").style.display = "none";
-  document.getElementById("myOverlay").style.display = "none";
+const IDS = ['0115','0153','0027','0103','0119','0064','0036','0010','0102','0032','0052','0123','0126','0044','0001',
+             '0017','0022','0049','0113','0109','0009','0018','0039','0031','0011','0133','0006','0094','0055','0013','0023'];
+const INTERVAL = 6500;
+
+const show = document.getElementById('show');
+const slides = IDS.map(id => {
+  const img = document.createElement('img');
+  img.className = 'slide';
+  img.alt = '';
+  img.decoding = 'async';
+  img.dataset.src = `files/images_full/img${id}.jpg`;
+  show.insertBefore(img, document.getElementById('prev'));
+  return img;
+});
+
+// Lazy: an image only gets its src when it is current or next in line.
+const ensure = i => {
+  const s = slides[(i + slides.length) % slides.length];
+  if (!s.src) s.src = s.dataset.src;
+  return s;
+};
+
+let cur = 0, timer, busy = false;
+
+// dir = 1: next (new slide enters from the right), dir = -1: previous (enters from the left)
+function go(dir) {
+  if (busy) return;
+  const idx = (cur + dir + slides.length) % slides.length;
+  const next = ensure(idx), out = slides[cur];
+  if (next === out) return;
+  busy = true;
+  restart();
+
+  const reveal = () => {
+    // park the incoming slide on its entry side without animating, then slide both
+    next.style.transition = 'none';
+    next.style.transform = `translateX(${dir * 100}%)`;
+    next.offsetWidth; // force reflow
+    next.style.transition = '';
+    next.style.transform = '';
+    next.classList.add('active');
+    out.classList.remove('active');
+    out.style.transform = `translateX(${-dir * 100}%)`;
+    cur = idx;
+    ensure(cur + 1);
+    setTimeout(() => { busy = false; }, 350);
+  };
+  // wait until the target is loaded so it never slides in half-drawn
+  next.complete && next.naturalWidth ? reveal() : next.addEventListener('load', reveal, { once: true });
 }
 
-// Modal Image Gallery
-function onClick(element) {
-  document.getElementById("img01").src = element.src;
-  document.getElementById("modal01").style.display = "block";
-  var captionText = document.getElementById("caption");
-  captionText.innerHTML = element.alt;
+function restart() {
+  clearInterval(timer);
+  if (!document.hidden) timer = setInterval(() => go(1), INTERVAL);
 }
 
+// first slide immediately (no slide-in), high priority
+slides[0].fetchPriority = 'high';
+slides[0].src = slides[0].dataset.src;
+slides[0].style.transition = 'none';
+slides[0].classList.add('active');
+slides[0].offsetWidth;
+slides[0].style.transition = '';
+slides[0].addEventListener('load', () => { ensure(1); restart(); }, { once: true });
+if (slides[0].complete) { ensure(1); restart(); }
+
+document.getElementById('prev').onclick = () => go(-1);
+document.getElementById('next').onclick = () => go(1);
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') go(-1);
+  if (e.key === 'ArrowRight') go(1);
+});
+document.addEventListener('visibilitychange', restart);
+
+let sx = 0;
+show.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+show.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - sx;
+  if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+}, { passive: true });
 </script>
-
-<script>
-// Script to open and close sidebar
-function w3_open() {
-  document.getElementById("mySidebar").style.display = "block";
-  document.getElementById("myOverlay").style.display = "block";
-}
-function w3_close() {
-  document.getElementById("mySidebar").style.display = "none";
-  document.getElementById("myOverlay").style.display = "none";
-}
-</script>
-
-<script>
-  $(document).ready(function() {
-    // Lazy load images using Intersection Observer
-    var lazyLoadObserver = new IntersectionObserver(function(entries, observer) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          var lazyImage = entry.target;
-          lazyImage.src = lazyImage.getAttribute('data-src');
-          lazyLoadObserver.unobserve(lazyImage);
-        }
-      });
-    }, { rootMargin: '0px 0px 100px 0px' }); // Adjust the rootMargin as needed
-
-    // Observe each lazyload image
-    $('.lazyload').each(function() {
-      lazyLoadObserver.observe(this);
-    });
-  });
-</script>
-
 </body>
 </html>

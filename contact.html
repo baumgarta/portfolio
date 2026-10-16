@@ -1,59 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>André Baumgart – Contact</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="css/w3.css">
-<link rel="stylesheet" href="css/style.css">
-<link rel="icon" href=" files/fav.png" type="image/x-icon">
-
+<title>André Baumgart – Contact</title>
+<link rel="icon" href="files/fav.png" type="image/x-icon">
+<link rel="stylesheet" href="style.css">
 </head>
-<body class="w3-light-grey w3-content" style="max-width:4000px">
+<body>
 
-<!-- Sidebar/menu -->
-<nav class="w3-sidebar w3-bar-block w3-white w3-animate-left w3-collapse w3-top w3-left" style="z-index:3;width:220px" id="mySidebar"><br>
-  <a href="index.html" style="text-decoration:none"><h3 class="w3-bar-item w3-left w3-text-black text_title">André Baumgart</h3></a>
-  <a href="photography.html" style="text-decoration:none" class="w3-bar-item w3-button w3-text-black text_nav">Photography</a> 
-  <a href="contact.html" style="text-decoration:none" class="w3-bar-item w3-button w3-text-black text_nav">Contact</a> 
+<input type="checkbox" id="menu" class="menu-toggle" aria-label="Toggle menu">
+<nav class="sidebar" aria-label="Main">
+  <a class="brand" href="index.html">André Baumgart</a>
+  <a class="nav-link" href="photography.html">Photography</a>
+  <a class="nav-link" href="contact.html" aria-current="page">Contact</a>
 </nav>
-
-<!-- Top menu on small screens -->
-<header class="w3-container w3-top w3-hide-large w3-white w3-xlarge w3-padding-16">
-  <span class="w3-left w3-padding text_title_small">André Baumgart</span>
-  <a href="javascript:void(0)" style="text-decoration:none" class="w3-right w3-button w3-white" onclick="w3_open()">☰</a>
+<header class="topbar">
+  <a class="brand" href="index.html">André Baumgart</a>
+  <label class="menu-btn" for="menu" aria-label="Menu">☰</label>
 </header>
+<label class="overlay" for="menu"></label>
 
-<!-- Overlay effect when opening sidebar on small screens -->
-<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="" id="myOverlay"></div>
-
-<!-- Page content -->
-<div class="w3-main" style="margin-left:250px">
-
-  <!-- Push down content on small screens --> 
-  <div class="w3-hide-large" style="margin-top:70px"></div>
-
-  <!-- Info section -->
-  <div class="w3-container w3-white w3-left w3-text-black w3-padding-32" id="info" >
-    <img src="files/contact.jpg" alt="" class="w3-image image_contact" width="365">
-    <div class="w3-content w3-padding-32 text_contact" style="max-width:365px; margin-top: -50px"; width:"300px">
-<p>I'm a social ecologist and occasional photographer born in Schwelm, Germany, living in Vienna, Austria.<br><br>Feel free to contact me via: <a href= "mailto:mail@andrebaumgart.com">mail@andrebaumgart.com</a></p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-// Script to open and close sidebar
-function w3_open() {
-  document.getElementById("mySidebar").style.display = "block";
-  document.getElementById("myOverlay").style.display = "block";
-}
-function w3_close() {
-  document.getElementById("mySidebar").style.display = "none";
-  document.getElementById("myOverlay").style.display = "none";
-}
-</script>
+<main>
+  <section class="contact">
+    <img src="files/contact.jpg" alt="André Baumgart" width="365" decoding="async">
+    <p>
+      I'm a social ecologist occasionally taking photographs. Born in Schwelm, Germany, living in Vienna, Austria.
+      <br><br>
+      Contact me via <a href="mailto:mail@andrebaumgart.com">mail@andrebaumgart.com</a>
+    </p>
+  </section>
+</main>
 
 </body>
 </html>
