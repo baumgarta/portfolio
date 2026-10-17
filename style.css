@@ -4,7 +4,7 @@
   --ease: cubic-bezier(.2, .7, .2, 1);
   --font: "Open Sans", sans-serif;
   --font-head: "Segoe UI", Arial, sans-serif;
-  --font-nav: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  --font-nav: Arial, Helvetica, sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -36,7 +36,7 @@ a { color: inherit; text-decoration: none; }
   margin: 0 0 44px;
   padding: 0 36px;
   font: 300 20px/1.3 var(--font-nav);
-  letter-spacing: .04em;
+  letter-spacing: .02em;
   color: #000;
 }
 
@@ -47,7 +47,7 @@ a { color: inherit; text-decoration: none; }
   margin: 0 36px;
   padding: 7px 0;
   font: 400 11px/1.6 var(--font-nav);
-  letter-spacing: .22em;
+  letter-spacing: .1em;
   text-transform: uppercase;
   color: #8c8c8c;
   transition: color .3s ease;
@@ -58,7 +58,7 @@ a { color: inherit; text-decoration: none; }
   position: absolute;
   left: 0;
   bottom: 3px;
-  width: calc(100% - .22em);
+  width: calc(100% - .1em);
   height: 1px;
   background: #000;
   transform: scaleX(0);
@@ -251,6 +251,7 @@ main { margin-left: var(--sidebar); }
 .lb-prev.off span, .lb-next.off span,
 .lb-prev.off:hover span, .lb-next.off:hover span { opacity: 0; }
 
+/* Maximised image: fills the window, caption hidden; the buttons keep their normal black look. */
 .lightbox.max .caption { opacity: 0; pointer-events: none; }
 .lightbox.max .lb-prev, .lightbox.max .lb-next { bottom: 0; }
 
@@ -276,9 +277,12 @@ main { margin-left: var(--sidebar); }
 }
 
 .slide.active { transform: none; z-index: 1; }
+
+/* Parallax: the incoming image slides over the outgoing one, which drifts away slowly and darkens slightly. */
 .slide.in { z-index: 2; }
 .slide.out { z-index: 1; filter: brightness(.75); }
 
+/* Quiet progress marker (below the navigation; on small screens along the very top edge of the screen). */
 .progress {
   height: 1px;
   background: #e4e4e4;
@@ -293,10 +297,6 @@ main { margin-left: var(--sidebar); }
   transform-origin: left;
 }
 
-.progress.run span { animation: fill var(--dur, 6.5s) linear forwards; }
-
-@keyframes fill { to { transform: scaleX(1); } }
-
 .sidebar .progress { margin: 44px 36px 0; }
 .topbar .progress { position: absolute; inset: 0 0 auto 0; height: 3px; background: rgba(0, 0, 0, .08); }
 
@@ -304,7 +304,7 @@ main { margin-left: var(--sidebar); }
   margin: 10px 36px 0;
   font-size: 11px;
   line-height: 1.4;
-  letter-spacing: .15em;
+  letter-spacing: .1em;
   color: #999;
   font-variant-numeric: tabular-nums;
 }
@@ -360,5 +360,4 @@ main { margin-left: var(--sidebar); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: .01ms !important; transition-delay: 0s !important; }
-  .progress.run span { animation: none; }
 }

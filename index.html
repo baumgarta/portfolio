@@ -38,7 +38,6 @@ const count = document.getElementById('count');
 const bars = document.querySelectorAll('.progress');
 const label = i => String(i + 1).padStart(2, '0') + ' / ' + String(IDS.length).padStart(2, '0');
 
-document.documentElement.style.setProperty('--dur', INTERVAL + 'ms');
 count.textContent = label(0);
 
 const slides = IDS.map(id => {
@@ -70,7 +69,7 @@ function go(dir) {
   const reveal = () => {
     next.style.transition = 'none';
     next.style.transform = `translateX(${dir * 100}%)`;
-    next.offsetWidth;
+    next.offsetWidth; 
     next.style.transition = '';
     next.style.transform = '';
     next.classList.add('active', 'in');
@@ -93,14 +92,23 @@ function go(dir) {
   next.complete && next.naturalWidth ? reveal() : next.addEventListener('load', reveal, { once: true });
 }
 
+let t0 = 0, raf = 0;
+
+function paint() {
+  const p = Math.min((performance.now() - t0) / INTERVAL, 1);
+  bars.forEach(b => { b.firstElementChild.style.transform = `scaleX(${p})`; });
+  if (p < 1) raf = requestAnimationFrame(paint);
+}
+
 function restart() {
   clearInterval(timer);
-  const running = !document.hidden;
-  bars.forEach(b => {
-    b.classList.remove('run');
-    if (running) { b.offsetWidth; b.classList.add('run'); }
-  });
-  if (running) timer = setInterval(() => go(1), INTERVAL);
+  cancelAnimationFrame(raf);
+  t0 = performance.now();
+  bars.forEach(b => { b.firstElementChild.style.transform = 'scaleX(0)'; });
+  if (!document.hidden) {
+    timer = setInterval(() => go(1), INTERVAL);
+    paint();
+  }
 }
 
 slides[0].fetchPriority = 'high';
