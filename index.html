@@ -27,8 +27,7 @@
 </main>
 
 <script>
-const IDS = ['0115','0153','0027','0103','0119','0064','0036','0010','0102','0032','0052','0123','0126','0044','0001',
-             '0017','0022','0049','0113','0109','0009','0018','0039','0031','0011','0133','0006','0094','0055','0013','0023'];
+const IDS = ['0115','0153','0027','0103','0119','0064','0036','0010','0102','0032','0052','0123','0126','0044','0001','0017','0022','0049','0113','0109','0009','0018','0039','0031','0011','0133','0006','0094','0055','0013','0023'];
 const INTERVAL = 6500;
 
 const show = document.getElementById('show');
@@ -42,7 +41,6 @@ const slides = IDS.map(id => {
   return img;
 });
 
-// Lazy: an image only gets its src when it is current or next in line.
 const ensure = i => {
   const s = slides[(i + slides.length) % slides.length];
   if (!s.src) s.src = s.dataset.src;
@@ -51,7 +49,6 @@ const ensure = i => {
 
 let cur = 0, timer, busy = false;
 
-// dir = 1: next (new slide enters from the right), dir = -1: previous (enters from the left)
 function go(dir) {
   if (busy) return;
   const idx = (cur + dir + slides.length) % slides.length;
@@ -61,7 +58,6 @@ function go(dir) {
   restart();
 
   const reveal = () => {
-    // park the incoming slide on its entry side without animating, then slide both
     next.style.transition = 'none';
     next.style.transform = `translateX(${dir * 100}%)`;
     next.offsetWidth; // force reflow
@@ -74,7 +70,6 @@ function go(dir) {
     ensure(cur + 1);
     setTimeout(() => { busy = false; }, 350);
   };
-  // wait until the target is loaded so it never slides in half-drawn
   next.complete && next.naturalWidth ? reveal() : next.addEventListener('load', reveal, { once: true });
 }
 
@@ -83,7 +78,6 @@ function restart() {
   if (!document.hidden) timer = setInterval(() => go(1), INTERVAL);
 }
 
-// first slide immediately (no slide-in), high priority
 slides[0].fetchPriority = 'high';
 slides[0].src = slides[0].dataset.src;
 slides[0].style.transition = 'none';
@@ -101,7 +95,6 @@ document.addEventListener('keydown', e => {
 });
 document.addEventListener('visibilitychange', restart);
 
-// swipe: one finger only, never while pinching or zoomed in
 const zoomed = () => window.visualViewport && visualViewport.scale > 1.01;
 let sx = 0, multi = false;
 show.addEventListener('touchstart', e => {

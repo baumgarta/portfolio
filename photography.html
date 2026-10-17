@@ -29,8 +29,8 @@
   <img class="lb-img" id="lbImg" alt="">
   <p class="caption" id="caption"></p>
   <button class="lb-btn lb-close" id="lbClose" aria-label="Close">✕</button>
-  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous">‹</button>
-  <button class="lb-btn lb-next" id="lbNext" aria-label="Next">›</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous"><span>‹</span></button>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next"><span>›</span></button>
 </div>
 
 <script>
@@ -124,7 +124,6 @@ const isOpen = () => lb.classList.contains('open');
 const px = r => ({ left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
 const thumbRect = a => { const r = a.getBoundingClientRect(); return { left: r.left + 1, top: r.top + 1, width: r.width - 2, height: r.height - 2 }; };
 
-// Fits the image into the free area (above the caption) and returns its rectangle.
 function fit() {
   const small = innerWidth <= 600, side = small ? 8 : 64, top = small ? 44 : 56;
   const aw = innerWidth - side * 2, ah = innerHeight - caption.offsetHeight - top - 8;
@@ -134,7 +133,16 @@ function fit() {
 
 const place = () => Object.assign(lbImg.style, px(fit()));
 const setCaption = d => { caption.innerHTML = `${d.caption} &copy; André Baumgart`; };
-const preload = i => { new Image().src = DATA[(i + DATA.length) % DATA.length].full; };
+const preload = i => { if (i >= 0 && i < DATA.length) new Image().src = DATA[i].full; };
+
+// First image has no "previous", last image has no "next".
+function updateNav() {
+  const first = current === 0, last = current === DATA.length - 1;
+  $('lbPrev').classList.toggle('off', first);
+  $('lbNext').classList.toggle('off', last);
+  $('lbPrev').setAttribute('aria-disabled', first);
+  $('lbNext').setAttribute('aria-disabled', last);
+}
 
 function zoom(from, to, duration = 380) {
   lbImg.getAnimations().forEach(a => a.cancel());
@@ -148,11 +156,12 @@ function zoom(from, to, duration = 380) {
 function openAt(i, a) {
   opener = a;
   current = i;
+  updateNav();
   const d = DATA[i], t = a.querySelector('img'), my = ++token;
 
   lbImg.getAnimations().forEach(x => x.cancel());
   nat = { w: t.naturalWidth || 3, h: t.naturalHeight || 2 };
-  lbImg.src = t.currentSrc || t.src;     // thumbnail first (already loaded), full size swapped in below
+  lbImg.src = t.currentSrc || t.src;
   setCaption(d);
   lb.classList.add('open');
   place();
@@ -166,7 +175,6 @@ function openAt(i, a) {
     nat = { w: full.naturalWidth || nat.w, h: full.naturalHeight || nat.h };
     lbImg.src = d.full;
     place();
-    // the thumbnail can have a different shape than the photo (e.g. a vertical image): ease into the real shape
     if (Math.abs(nat.w / nat.h - was) > was * 0.02) zoom(now, fit(), 300);
     preload(current + 1);
     preload(current - 1);
@@ -174,9 +182,10 @@ function openAt(i, a) {
   lb.focus({ preventScroll: true });
 }
 
-// Next/previous: wait until the new image is decoded, then swap image and caption at once (no animation, no resizing).
 function show(i) {
-  current = (i + DATA.length) % DATA.length;
+  if (i < 0 || i >= DATA.length) return;
+  current = i;
+  updateNav();
   const d = DATA[current], my = ++token, img = new Image();
   img.src = d.full;
   (img.decode ? img.decode() : Promise.resolve()).catch(() => {}).then(() => {
@@ -190,6 +199,8 @@ function show(i) {
     preload(current - 1);
   });
 }
+
+const go = dir => show(current + dir);
 
 function closeLb() {
   if (!isOpen()) return;
@@ -205,34 +216,28 @@ function closeLb() {
   (a || opener) && (a || opener).focus({ preventScroll: true });
 }
 
-$('lbClose').onclick = closeLb;
-$('lbPrev').onclick = () => show(current - 1);
-$('lbNext').onclick = () => show(current + 1);
 lb.addEventListener('click', e => {
   if (e.target.closest('.lb-close')) return closeLb();
-  if (e.target.closest('.lb-prev')) return show(current - 1);
-  if (e.target.closest('.lb-next')) return show(current + 1);
+  if (e.target.closest('.lb-prev')) return go(-1);  
+  if (e.target.closest('.lb-next')) return go(1);  
   closeLb();
 });
 
 document.addEventListener('keydown', e => {
   if (!isOpen()) return;
   if (e.key === 'Escape') closeLb();
-  else if (e.key === 'ArrowLeft') show(current - 1);
-  else if (e.key === 'ArrowRight') show(current + 1);
+  else if (e.key === 'ArrowLeft') go(-1);
+  else if (e.key === 'ArrowRight') go(1);
   if ([' ', 'ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End'].includes(e.key)) e.preventDefault();
 });
 
 addEventListener('resize', () => { if (isOpen()) { lbImg.getAnimations().forEach(a => a.cancel()); place(); } });
 
-// Keep the page behind the lightbox perfectly still (no overflow toggling, so no scrollbar-induced shift).
 lb.addEventListener('wheel', e => { if (!e.ctrlKey) e.preventDefault(); }, { passive: false });
 
-// Pinch-zoom stays available (touch-action in CSS); while zoomed in, panning is allowed as well.
 const zoomed = () => window.visualViewport && visualViewport.scale > 1.01;
 if (window.visualViewport) visualViewport.addEventListener('resize', () => { lb.style.touchAction = zoomed() ? 'auto' : ''; });
 
-// swipe: one finger only, never while pinching or zoomed in
 let sx = 0, sy = 0, multi = false;
 lb.addEventListener('touchstart', e => {
   if (e.touches.length > 1) multi = true;
@@ -242,7 +247,7 @@ lb.addEventListener('touchend', e => {
   if (multi) { if (!e.touches.length) multi = false; return; }
   if (zoomed()) return;
   const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
-  if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) show(current + (dx < 0 ? 1 : -1));
+  if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? 1 : -1);
   else if (dy > 90 && Math.abs(dy) > Math.abs(dx)) closeLb();
 }, { passive: true });
 </script>

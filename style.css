@@ -1,4 +1,3 @@
-/* ---------- Base ---------- */
 :root {
   --sidebar: 220px;
   --cap: 80px;
@@ -20,7 +19,6 @@ body {
 
 a { color: inherit; text-decoration: none; }
 
-/* ---------- Sidebar ---------- */
 .sidebar {
   position: fixed;
   inset: 0 auto 0 0;
@@ -50,7 +48,6 @@ a { color: inherit; text-decoration: none; }
 
 .nav-link:hover { background: #000; color: #fff; }
 
-/* ---------- Top bar + menu (small screens, CSS-only) ---------- */
 .menu-toggle { position: absolute; opacity: 0; pointer-events: none; }
 
 .topbar {
@@ -87,10 +84,8 @@ a { color: inherit; text-decoration: none; }
   z-index: 25;
 }
 
-/* ---------- Page content ---------- */
 main { margin-left: var(--sidebar); }
 
-/* ---------- Photo grid ---------- */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -120,7 +115,6 @@ main { margin-left: var(--sidebar); }
 .thumb:hover img.loaded { filter: brightness(.5); }
 .thumb:focus { outline: none; }
 
-/* ---------- Lightbox ---------- */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -187,15 +181,16 @@ main { margin-left: var(--sidebar); }
 .lb-close {
   top: 0;
   right: 0;
+  z-index: 3;
   padding: 14px 18px;
 }
 
 .lb-close:hover { opacity: .5; }
 
-/* Wide invisible hit zones on the full left and right edges. */
 .lb-prev, .lb-next {
   top: 0;
   bottom: var(--cap);          /* stop above the caption */
+  z-index: 2;
   width: 25%;                  /* generous clickable strip */
   min-width: 90px;
   display: flex;
@@ -207,12 +202,14 @@ main { margin-left: var(--sidebar); }
 .lb-prev { left: 0; justify-content: flex-start; }
 .lb-next { right: 0; justify-content: flex-end; }
 
-/* Only the arrow glyph lights up on hover, not the whole strip. */
 .lb-prev:hover, .lb-next:hover { color: #000; }
 .lb-prev span, .lb-next span { transition: opacity .2s ease; }
 .lb-prev:hover span, .lb-next:hover span { opacity: .5; }
 
-/* ---------- Slideshow (index) ---------- */
+.lb-prev.off, .lb-next.off { cursor: default; }
+.lb-prev.off span, .lb-next.off span,
+.lb-prev.off:hover span, .lb-next.off:hover span { opacity: 0; }
+
 .slideshow {
   position: fixed;
   inset: 0;
@@ -250,7 +247,6 @@ main { margin-left: var(--sidebar); }
 .zone.prev { left: 0; cursor: w-resize; }
 .zone.next { right: 0; cursor: e-resize; }
 
-/* ---------- Contact ---------- */
 .contact {
   padding: 32px 30px 64px;
   font-size: 12px;
@@ -270,7 +266,6 @@ main { margin-left: var(--sidebar); }
 .contact a { transition: color .2s; }
 .contact a:hover { color: #d00; }
 
-/* ---------- Responsive ---------- */
 @media (max-width: 992px) {
   .sidebar { transform: translateX(-100%); }
   .menu-toggle:checked ~ .sidebar { transform: none; }
