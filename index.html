@@ -14,10 +14,13 @@
   <a class="brand" href="index.html">André Baumgart</a>
   <a class="nav-link" href="photography.html">Photography</a>
   <a class="nav-link" href="contact.html">Contact</a>
+  <div class="progress" aria-hidden="true"><span></span></div>
+  <div class="count" id="count" aria-hidden="true"></div>
 </nav>
 <header class="topbar">
   <a class="brand" href="index.html">André Baumgart</a>
   <label class="menu-btn" for="menu" aria-label="Menu">☰</label>
+  <div class="progress" aria-hidden="true"><span></span></div>
 </header>
 <label class="overlay" for="menu"></label>
 
@@ -27,10 +30,17 @@
 </main>
 
 <script>
-const IDS = ['0115','0153','0027','0103','0119','0064','0036','0010','0102','0032','0052','0123','0126','0044','0001','0017','0022','0049','0113','0109','0009','0018','0039','0031','0011','0133','0006','0094','0055','0013','0023'];
+const IDS = ['0115','0153','0027','0103','0119','0064','0036','0010','0102','0032','0052','0123','0126','0044','0001','0017','0022','0049','0113','0109','0009','0018','0039','0031','0011','0006','0094','0055','0013','0023'];
 const INTERVAL = 6500;
 
 const show = document.getElementById('show');
+const count = document.getElementById('count');
+const bars = document.querySelectorAll('.progress');
+const label = i => String(i + 1).padStart(2, '0') + ' / ' + String(IDS.length).padStart(2, '0');
+
+document.documentElement.style.setProperty('--dur', INTERVAL + 'ms');
+count.textContent = label(0);
+
 const slides = IDS.map(id => {
   const img = document.createElement('img');
   img.className = 'slide';
@@ -60,22 +70,37 @@ function go(dir) {
   const reveal = () => {
     next.style.transition = 'none';
     next.style.transform = `translateX(${dir * 100}%)`;
-    next.offsetWidth; // force reflow
+    next.offsetWidth;
     next.style.transition = '';
     next.style.transform = '';
-    next.classList.add('active');
+    next.classList.add('active', 'in');
     out.classList.remove('active');
-    out.style.transform = `translateX(${-dir * 100}%)`;
+    out.classList.add('out');
+    out.style.transform = `translateX(${-dir * 30}%)`;
     cur = idx;
+    count.textContent = label(cur);
     ensure(cur + 1);
-    setTimeout(() => { busy = false; }, 350);
+    setTimeout(() => {
+      out.style.transition = 'none';
+      out.style.transform = '';
+      out.classList.remove('out');
+      out.offsetWidth;
+      out.style.transition = '';
+      next.classList.remove('in');
+      busy = false;
+    }, 350);
   };
   next.complete && next.naturalWidth ? reveal() : next.addEventListener('load', reveal, { once: true });
 }
 
 function restart() {
   clearInterval(timer);
-  if (!document.hidden) timer = setInterval(() => go(1), INTERVAL);
+  const running = !document.hidden;
+  bars.forEach(b => {
+    b.classList.remove('run');
+    if (running) { b.offsetWidth; b.classList.add('run'); }
+  });
+  if (running) timer = setInterval(() => go(1), INTERVAL);
 }
 
 slides[0].fetchPriority = 'high';
