@@ -7,7 +7,7 @@
 <link rel="icon" href="files/fav.png" type="image/x-icon">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="intro">
 
 <input type="checkbox" id="menu" class="menu-toggle" aria-label="Toggle menu">
 <nav class="sidebar" aria-label="Main">
@@ -117,8 +117,25 @@ slides[0].style.transition = 'none';
 slides[0].classList.add('active');
 slides[0].offsetWidth;
 slides[0].style.transition = '';
-slides[0].addEventListener('load', () => { ensure(1); restart(); }, { once: true });
-if (slides[0].complete) { ensure(1); restart(); }
+slides[0].classList.add('pre');
+
+let started = false;
+function startShow() {
+  if (started) return;
+  started = true;
+  const first = slides[0];
+  const fade = () => {
+    first.classList.remove('pre');
+    first.classList.add('fade');
+    first.addEventListener('animationend', () => first.classList.remove('fade'), { once: true });
+    ensure(1);
+    restart();
+  };
+  (first.decode ? first.decode() : Promise.resolve()).catch(() => {}).then(fade);
+}
+
+slides[0].addEventListener('load', startShow, { once: true });
+if (slides[0].complete) startShow();
 
 document.getElementById('prev').onclick = () => go(-1);
 document.getElementById('next').onclick = () => go(1);
