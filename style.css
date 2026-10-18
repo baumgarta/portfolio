@@ -250,7 +250,6 @@ main { margin-left: var(--sidebar); }
 .lb-prev.off span, .lb-next.off span,
 .lb-prev.off:hover span, .lb-next.off:hover span { opacity: 0; }
 
-/* Maximised image: fills the window, caption hidden; the buttons keep their normal black look. */
 .lightbox.max .caption { opacity: 0; pointer-events: none; }
 .lightbox.max .lb-prev, .lightbox.max .lb-next { bottom: 0; }
 
@@ -280,24 +279,20 @@ main { margin-left: var(--sidebar); }
 
 .slide.active { transform: none; z-index: 1; }
 
-/* Parallax: the incoming image slides over the outgoing one, which drifts away slowly and darkens slightly. */
 .slide.in { z-index: 2; }
 .slide.out { z-index: 1; filter: brightness(.75); }
 
-/* Intro: the first photograph fades in once it is ready. */
 .slide.pre { opacity: 0; }
 .slide.fade { animation: fade-in 1s ease both; }
 
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 
-/* Intro: on the home page the sidebar slides in from the left (desktop; on small screens it is a hidden drawer). */
 @keyframes sidebar-in { from { transform: translateX(-100%); } to { transform: none; } }
 
 @media (min-width: 993px) {
   .intro .sidebar { animation: sidebar-in .35s var(--ease) both; }
 }
 
-/* Quiet progress marker (below the navigation; on small screens along the very top edge of the screen). */
 .progress {
   height: 1px;
   background: #e4e4e4;
