@@ -6,6 +6,9 @@
 <title>André Baumgart – Photography</title>
 <link rel="icon" href="files/fav.png" type="image/x-icon">
 <link rel="stylesheet" href="style.css">
+<style>
+.lightbox:focus { outline: none; }
+</style>
 </head>
 <body>
 
@@ -332,6 +335,10 @@ lb.addEventListener('click', e => {
   if (e.target === lbImg) return toggleMax();
   closeLb();
 });
+
+lb.querySelectorAll('.lb-btn').forEach(btn =>
+  btn.addEventListener('mousedown', e => e.preventDefault())
+);
 
 document.addEventListener('keydown', e => {
   if (!isOpen()) return;
