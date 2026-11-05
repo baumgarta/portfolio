@@ -278,6 +278,16 @@ grid.addEventListener('click', e => {
   openAt(+a.dataset.i, a);
 });
 
+let hoverTimer = 0;
+const warm = a => a && preload(+a.dataset.i);
+grid.addEventListener('pointerover', e => {
+  clearTimeout(hoverTimer);
+  const a = e.target.closest('.thumb');
+  if (a) hoverTimer = setTimeout(() => warm(a), 80);
+});
+grid.addEventListener('pointerdown', e => warm(e.target.closest('.thumb')));
+grid.addEventListener('focusin', e => warm(e.target.closest('.thumb')));
+
 const EASE = 'cubic-bezier(.2, .7, .2, 1)';
 const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 let current = 0, opener = null, token = 0, nat = { w: 3, h: 2 }, maxed = false, known = false;
@@ -299,7 +309,15 @@ function fit() {
 
 const place = () => Object.assign(lbImg.style, px(fit()));
 const setCaption = d => { caption.innerHTML = `${d.caption} &copy; André Baumgart`; };
-const preload = i => { if (i >= 0 && i < DATA.length) new Image().src = DATA[i].full; };
+const warmed = new Set();
+const preload = i => {
+  if (i < 0 || i >= DATA.length || warmed.has(i)) return;
+  warmed.add(i);
+  new Image().src = DATA[i].full;
+};
+const decoded = img => (img.decode ? img.decode() : Promise.resolve()).catch(() => {});
+
+const FULL_WAIT = 150;
 
 function updateNav() {
   const first = current === 0, last = current === DATA.length - 1;
@@ -333,30 +351,53 @@ function openAt(i, a) {
   lb.classList.remove('max');
   updateNav();
   const d = DATA[i], t = a.querySelector('img'), my = ++token;
+  warmed.add(i);
 
-  lbImg.getAnimations().forEach(x => x.cancel());
-  nat = { w: t.naturalWidth || 3, h: t.naturalHeight || 2 };
-  lbImg.src = t.currentSrc || t.src;
-  setCaption(d);
-  lb.classList.add('open');
-  place();
-  zoom(thumbRect(a), fit());
-
+  // 1. Give the full-size image a short head start. If it's cached or arrives
+  //    quickly, the lightbox opens sharp straight away.
   const full = new Image();
   full.src = d.full;
-  (full.decode ? full.decode() : Promise.resolve()).catch(() => {}).then(() => {
+  const fullReady = decoded(full).then(() => full.naturalWidth > 0);
+  const wait = new Promise(res => setTimeout(() => res(false), FULL_WAIT));
+
+  Promise.race([fullReady, wait]).then(sharp => {
     if (my !== token) return;
-    const now = lbImg.getBoundingClientRect();
-    nat = { w: full.naturalWidth || nat.w, h: full.naturalHeight || nat.h };
-    known = true;
-    lbImg.src = d.full;
-    place();
-    const to = fit();
-    if (Math.abs(to.width - now.width) > 2 || Math.abs(to.height - now.height) > 2) zoom(now, to, 300);
-    preload(current + 1);
-    preload(current - 1);
+    lbImg.getAnimations().forEach(x => x.cancel());
+    lbImg.src = sharp ? d.full : (t.currentSrc || t.src);
+    nat = sharp ? { w: full.naturalWidth, h: full.naturalHeight }
+                : { w: t.naturalWidth || 3, h: t.naturalHeight || 2 };
+    known = sharp;
+
+    // 2. Only show the lightbox once the new picture is decoded, so the
+    //    previously opened photo can never flash up first.
+    decoded(lbImg).then(() => {
+      if (my !== token) return;
+      setCaption(d);
+      lb.classList.add('open');
+      place();
+      zoom(thumbRect(a), fit());
+      lb.focus({ preventScroll: true });
+
+      if (sharp) { preload(current + 1); preload(current - 1); return; }
+
+      // 3. Opened with the thumbnail: swap in the full image when it's ready.
+      fullReady.then(() => {
+        if (my !== token) return;
+        lbImg.src = d.full;
+        decoded(lbImg).then(() => {
+          if (my !== token) return;
+          const now = lbImg.getBoundingClientRect();
+          nat = { w: full.naturalWidth || nat.w, h: full.naturalHeight || nat.h };
+          known = true;
+          place();
+          const to = fit();
+          if (Math.abs(to.width - now.width) > 2 || Math.abs(to.height - now.height) > 2) zoom(now, to, 300);
+          preload(current + 1);
+          preload(current - 1);
+        });
+      });
+    });
   });
-  lb.focus({ preventScroll: true });
 }
 
 function show(i) {
