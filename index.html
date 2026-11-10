@@ -12,13 +12,14 @@
 <input type="checkbox" id="menu" class="menu-toggle" aria-label="Toggle menu">
 <nav class="sidebar" aria-label="Main">
   <a class="brand" href="photography.html">André Baumgart</a>
-  <a class="nav-link" href="photography.html">Photography</a>
+  <a class="nav-link" href="photography.html">Gallery</a>
   <a class="nav-link" href="contact.html">Contact</a>
   <div class="progress" aria-hidden="true"><span></span></div>
-  <div class="count" id="count" aria-hidden="true"></div>
+  <button class="play" type="button" aria-label="Pause slideshow"></button>
 </nav>
 <header class="topbar">
   <a class="brand" href="index.html">André Baumgart</a>
+  <button class="play" type="button" aria-label="Pause slideshow"></button>
   <label class="menu-btn" for="menu" aria-label="Menu">☰</label>
   <div class="progress" aria-hidden="true"><span></span></div>
 </header>
@@ -34,11 +35,8 @@ const IDS = ['0027','0103','0115','0119','0064','0036','0010','0102','0032','005
 const INTERVAL = 6500;
 
 const show = document.getElementById('show');
-const count = document.getElementById('count');
 const bars = document.querySelectorAll('.progress');
-const label = i => String(i + 1).padStart(2, '0') + ' / ' + String(IDS.length).padStart(2, '0');
-
-count.textContent = label(0);
+const playBtns = document.querySelectorAll('.play');
 
 const slides = IDS.map(id => {
   const img = document.createElement('img');
@@ -56,13 +54,13 @@ const ensure = i => {
   return s;
 };
 
-let cur = 0, timer, busy = false;
+let cur = 0, timer, busy = false, started = false;
 
 function go(dir) {
-  if (busy) return;
+  if (busy) return false;
   const idx = (cur + dir + slides.length) % slides.length;
   const next = ensure(idx), out = slides[cur];
-  if (next === out) return;
+  if (next === out) return false;
   busy = true;
   restart();
 
@@ -77,7 +75,6 @@ function go(dir) {
     out.classList.add('out');
     out.style.transform = `translateX(${-dir * 30}%)`;
     cur = idx;
-    count.textContent = label(cur);
     ensure(cur + 1);
     setTimeout(() => {
       out.style.transition = 'none';
@@ -90,26 +87,52 @@ function go(dir) {
     }, 350);
   };
   next.complete && next.naturalWidth ? reveal() : next.addEventListener('load', reveal, { once: true });
+  return true;
 }
 
-let t0 = 0, raf = 0;
+let t0 = 0, raf = 0, elapsed = 0, paused = false, running = false;
+
+const draw = p => bars.forEach(b => { b.firstElementChild.style.transform = `scaleX(${p})`; });
 
 function paint() {
   const p = Math.min((performance.now() - t0) / INTERVAL, 1);
-  bars.forEach(b => { b.firstElementChild.style.transform = `scaleX(${p})`; });
+  draw(p);
   if (p < 1) raf = requestAnimationFrame(paint);
 }
 
-function restart() {
-  clearInterval(timer);
+function stop() {
+  if (running) elapsed = Math.min(performance.now() - t0, INTERVAL);
+  running = false;
+  clearTimeout(timer);
   cancelAnimationFrame(raf);
-  t0 = performance.now();
-  bars.forEach(b => { b.firstElementChild.style.transform = 'scaleX(0)'; });
-  if (!document.hidden) {
-    timer = setInterval(() => go(1), INTERVAL);
-    paint();
-  }
+  draw(elapsed / INTERVAL);
 }
+
+function run() {
+  stop();
+  if (paused || document.hidden || !started) return;
+  running = true;
+  t0 = performance.now() - elapsed;
+  timer = setTimeout(() => { if (!go(1)) restart(); }, INTERVAL - elapsed);
+  paint();
+}
+
+function restart() {
+  running = false;
+  elapsed = 0;
+  run();
+}
+
+function setPaused(p) {
+  paused = p;
+  playBtns.forEach(b => {
+    b.classList.toggle('paused', p);
+    b.setAttribute('aria-label', p ? 'Play slideshow' : 'Pause slideshow');
+  });
+  run();
+}
+
+playBtns.forEach(b => b.addEventListener('click', () => setPaused(!paused)));
 
 slides[0].fetchPriority = 'high';
 slides[0].src = slides[0].dataset.src;
@@ -119,7 +142,6 @@ slides[0].offsetWidth;
 slides[0].style.transition = '';
 slides[0].classList.add('pre');
 
-let started = false;
 function startShow() {
   if (started) return;
   started = true;
@@ -142,8 +164,9 @@ document.getElementById('next').onclick = () => go(1);
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') go(-1);
   if (e.key === 'ArrowRight') go(1);
+  if (e.key === ' ' && !e.target.closest('button, a, input')) { e.preventDefault(); setPaused(!paused); }
 });
-document.addEventListener('visibilitychange', restart);
+document.addEventListener('visibilitychange', run);
 
 const zoomed = () => window.visualViewport && visualViewport.scale > 1.01;
 let sx = 0, multi = false;

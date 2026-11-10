@@ -361,14 +361,52 @@ main { margin-left: var(--sidebar); }
 .sidebar .progress { margin: 44px 36px 0; }
 .topbar .progress { position: absolute; inset: 0 0 auto 0; height: 3px; background: rgba(0, 0, 0, .08); }
 
-.count {
-  margin: 10px 36px 0;
-  font-size: 11px;
-  line-height: 1.4;
-  letter-spacing: .1em;
-  color: #999;
-  font-variant-numeric: tabular-nums;
+.play {
+  position: relative;
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin: 10px 0 0 26px;   /* icon lines up with the progress bar at 36px */
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #000;
+  opacity: .5;
+  cursor: pointer;
+  transition: opacity .2s ease;
+  -webkit-tap-highlight-color: transparent;
 }
+
+.play:hover { opacity: 1; }
+.play:focus:not(:focus-visible) { outline: none; }
+
+/* pause icon: two bars */
+.play::before,
+.play::after {
+  content: "";
+  position: absolute;
+  top: 9px;
+  width: 2px;
+  height: 10px;
+  background: currentColor;
+}
+
+.play::before { left: 10px; }
+.play::after { left: 16px; }
+
+.play.paused::after { display: none; }
+.play.paused::before {
+  top: 8px;
+  left: 11px;
+  width: 0;
+  height: 0;
+  background: none;
+  border-style: solid;
+  border-width: 6px 0 6px 9px;
+  border-color: transparent transparent transparent currentColor;
+}
+
+.topbar .play { margin: 0 0 0 auto; }   /* sits right, next to the menu button */
 
 .zone {
   position: absolute;
